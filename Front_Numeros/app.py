@@ -55,7 +55,9 @@ def predict():
         return jsonify({'prediction': resultado})
         
     except Exception as e:
-        print(f"\n!!! Error: {str(e)}\n")
+        print(f"\n!!! Error: {str(e)}\n", flush=True) 
+        import traceback
+        traceback.print_exc()  # <- Esto imprime todo el error con detalles
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

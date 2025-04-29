@@ -143,7 +143,7 @@
         ctx.fillStyle = 'white';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.strokeStyle = 'black';
-        ctx.lineWidth = 25;
+        ctx.lineWidth = 15;
         ctx.lineCap = 'round';
 
         // Event listeners
@@ -178,7 +178,9 @@
 
         async function predict() {
             const image = canvas.toDataURL('image/png');
-            const blob = await fetch(image).then(res => res.blob());
+            const blob = await fetch(image)
+              .then(res => res.blob())
+              .then(b => new Blob([b], { type: 'image/png' }));
             
             const formData = new FormData();
             formData.append('image', blob, 'digit.png');
