@@ -130,7 +130,7 @@
                 </button>
             </div>            
         </div>
-        <h2 id="result">Predicción: </h2>
+        <h2 id="result"></h2>
     </div>
     <img src="/static/Decor.png" alt="Decor" class="flower"/>    
 
@@ -177,32 +177,32 @@
         }
 
         async function predict() {
-            const image = canvas.toDataURL('image/png');
-            const blob = await fetch(image)
-              .then(res => res.blob())
-              .then(b => new Blob([b], { type: 'image/png' }));
-            
-            const formData = new FormData();
-            formData.append('image', blob, 'digit.png');
+          const image = canvas.toDataURL('image/png');
+          const blob = await fetch(image)
+            .then(res => res.blob())
+            .then(b => new Blob([b], { type: 'image/png' }));
 
-            fetch('/predict', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Error en la predicción');
-                return response.json();
-            })
-            .then(data => {
-                if (data.prediction !== undefined)
-                    document.getElementById('result').innerText = `Predicción: ${data.prediction}`;
-                else
-                    console.error('Respuesta inesperada:', data);                
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
+          const formData = new FormData();
+          formData.append('archivo', blob, 'digit.png');
+
+          fetch('http://127.0.0.1:8000/predecir', {
+              method: 'POST',
+              body: formData
+          })
+          .then(response => {
+              if (!response.ok) throw new Error('Error en la predicción');
+              return response.json();
+          })
+          .then(data => {
+              const { red_neuronal, convolucional } = data;
+              document.getElementById('result').innerText =
+                  `Red Neuronal: ${red_neuronal} | Convolucional: ${convolucional}`;
+          })
+          .catch(error => {
+              console.error('Error:', error);
+          });
+      }
+
     </script>
 </body>
 </html>
